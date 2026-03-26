@@ -57,24 +57,40 @@ export default function Signup() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">First Name</label>
-            <GlassInput type="text" name="firstName" placeholder="John" required />
+            <label htmlFor="firstName" className="text-sm font-medium">
+              First Name
+            </label>
+            <GlassInput id="firstName" type="text" name="firstName" placeholder="John" required />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Last Name</label>
-            <GlassInput type="text" name="lastName" placeholder="Doe" required />
+            <label htmlFor="lastName" className="text-sm font-medium">
+              Last Name
+            </label>
+            <GlassInput id="lastName" type="text" name="lastName" placeholder="Doe" required />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Username</label>
-          <GlassInput type="text" name="username" placeholder="johndoe" required />
+          <label htmlFor="username" className="text-sm font-medium">
+            Username
+          </label>
+          <GlassInput id="username" type="text" name="username" placeholder="johndoe" required />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Password</label>
-          <GlassInput type="password" name="password" placeholder="••••••••" required />
-          <p className="text-xs text-foreground/50">Must be at least 8 characters long.</p>
+          <label htmlFor="password" className="text-sm font-medium">
+            Password
+          </label>
+          <GlassInput
+            id="password"
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            required
+          />
+          <p className="text-xs text-foreground/50" id="passwordHint">
+            Must be at least 8 characters long.
+          </p>
         </div>
 
         <SubmitButton />
