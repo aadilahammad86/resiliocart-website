@@ -67,6 +67,12 @@ export default function Signup() {
               Last Name
             </label>
             <GlassInput id="lastName" type="text" name="lastName" placeholder="Doe" required />
+            <label className="text-sm font-medium">First Name</label>
+            <GlassInput type="text" name="firstName" placeholder="John" required />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Last Name</label>
+            <GlassInput type="text" name="lastName" placeholder="Doe" required />
           </div>
         </div>
 
@@ -91,6 +97,14 @@ export default function Signup() {
           <p className="text-xs text-foreground/50" id="passwordHint">
             Must be at least 8 characters long.
           </p>
+          <label className="text-sm font-medium">Username</label>
+          <GlassInput type="text" name="username" placeholder="johndoe" required />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Password</label>
+          <GlassInput type="password" name="password" placeholder="••••••••" required />
+          <p className="text-xs text-foreground/50">Must be at least 8 characters long.</p>
         </div>
 
         <SubmitButton />
