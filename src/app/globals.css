@@ -3,25 +3,33 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+
+  /* Glassmorphism Light Theme Tokens */
+  --glass-light: rgba(255, 255, 255, 0.4);
+  --glass-dark: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f172a; /* Deep Slate */
+    --foreground: #f8fafc; /* Cool White */
+
+    /* Glassmorphism Dark Theme Tokens */
+    --glass-light: rgba(255, 255, 255, 0.08);
+    --glass-dark: rgba(0, 0, 0, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
 body {
+  background-color: var(--background);
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  /* Background gradient to beautifully showcase glassmorphism */
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
+  background-attachment: fixed;
 }
