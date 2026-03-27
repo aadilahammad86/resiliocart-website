@@ -4,7 +4,7 @@ import * as React from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlassInput } from '@/components/ui/GlassInput';
 import { GlassButton } from '@/components/ui/GlassButton';
-import { signupUser } from '@/actions/auth';
+import { adminCreateUser } from '@/actions/admin';
 import { useFormState, useFormStatus } from 'react-dom';
 
 function SubmitButton() {
@@ -19,7 +19,16 @@ function SubmitButton() {
 const initialState = { error: '', success: false, message: '' };
 
 export default function AddUserPage() {
-  const [state, formAction] = useFormState(signupUser, initialState);
+  const [state, formAction] = useFormState(adminCreateUser, initialState);
+
+  // Auto-reset form inputs on success if needed, though React 19 handles dom forms automatically.
+  const formRef = React.useRef<HTMLFormElement>(null);
+
+  React.useEffect(() => {
+    if (state?.success) {
+      formRef.current?.reset();
+    }
+  }, [state]);
 
   return (
     <main className="p-8 space-y-8 max-w-[800px] mx-auto">
@@ -31,7 +40,7 @@ export default function AddUserPage() {
       </div>
 
       <GlassCard variant="light" className="p-8 space-y-6">
-        <form action={formAction} className="space-y-4">
+        <form ref={formRef} action={formAction} className="space-y-4">
           {state?.error && (
             <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg backdrop-blur-sm shadow-sm transition-all duration-300">
               {state.error}
@@ -60,16 +69,44 @@ export default function AddUserPage() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="username" className="text-sm font-medium">
-              Username
-            </label>
-            <GlassInput id="username" type="text" name="username" placeholder="johndoe" required />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="username" className="text-sm font-medium">
+                Username
+              </label>
+              <GlassInput
+                id="username"
+                type="text"
+                name="username"
+                placeholder="johndoe"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="role" className="text-sm font-medium">
+                System Role
+              </label>
+              <select
+                id="role"
+                name="role"
+                defaultValue="USER"
+                required
+                className="w-full px-4 py-3 bg-white/5 border border-glass-border/40 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-all duration-300 shadow-glass-inner"
+              >
+                <option value="USER" className="text-black bg-white">
+                  Standard User
+                </option>
+                <option value="SUPERADMIN" className="text-black bg-white">
+                  Super Admin
+                </option>
+              </select>
+            </div>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium">
-              Password
+              Initial Password
             </label>
             <GlassInput
               id="password"
