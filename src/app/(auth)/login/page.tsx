@@ -7,7 +7,8 @@ import { GlassButton } from '@/components/ui/GlassButton';
 import Link from 'next/link';
 import { loginUser } from '@/actions/auth';
 import { useFormState, useFormStatus } from 'react-dom';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -20,9 +21,13 @@ function SubmitButton() {
 
 const initialState = { error: '', success: false, message: '' };
 
-export default function Login() {
+function LoginForm() {
   const [state, formAction] = useFormState(loginUser, initialState);
   const router = useRouter();
+
+  // Natively reads Next.js URL param bindings pushed down by the Middleware natively
+  const searchParams = useSearchParams();
+  const errorParam = searchParams.get('error');
 
   React.useEffect(() => {
     if (state?.success) {
@@ -41,6 +46,13 @@ export default function Login() {
       </div>
 
       <form action={formAction} className="space-y-4">
+        {/* Render a specific toast / dynamic UI block organically responding to the edge middleware tampered cookie redirect context */}
+        {errorParam === 'expired' && !state.success && !state.error && (
+          <div className="p-3 text-sm text-orange-500 bg-orange-500/10 border border-orange-500/20 rounded-lg backdrop-blur-sm shadow-sm transition-all duration-300">
+            Your session has been logically expired or invalidated. Please securely log in again.
+          </div>
+        )}
+
         {state?.error && (
           <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg backdrop-blur-sm shadow-sm transition-all duration-300">
             {state.error}
@@ -83,5 +95,14 @@ export default function Login() {
         </Link>
       </div>
     </GlassCard>
+  );
+}
+
+// Ensure the dynamic SearchParams component is wrapped in an explicit Suspense boundary to cleanly satisfy the modern Next.js 15+ constraints generically.
+export default function Login() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

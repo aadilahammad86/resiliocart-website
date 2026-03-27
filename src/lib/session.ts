@@ -7,11 +7,7 @@ const secretKey = process.env.SESSION_SECRET || 'development-fallback-secret-res
 const key = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload: JWTPayload) {
-  return await new SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime('7d') // Sessions last for 7 days
-    .sign(key);
+  return await new SignJWT(payload).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().sign(key);
 }
 
 export async function decrypt(input: string): Promise<JWTPayload | null> {
@@ -26,7 +22,8 @@ export async function decrypt(input: string): Promise<JWTPayload | null> {
 }
 
 export async function createSession(userId: string, username: string, role: string) {
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  // 10-year persistent cookies (effectively never expires for active returning users on the same device)
+  const expires = new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000);
   // Encode expires as string internally for generic JWTPayload compat
   const sessionData: JWTPayload = { userId, username, role, expires: expires.toISOString() };
   const sessionToken = await encrypt(sessionData);
