@@ -3,7 +3,8 @@
 import prisma from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { createSession } from '@/lib/session';
+import { createSession, deleteSession } from '@/lib/session';
+import { redirect } from 'next/navigation';
 
 const signupSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -105,4 +106,9 @@ export async function loginUser(prevState: AuthState | null, formData: FormData)
     console.error('Login Action Error:', error);
     return { error: 'An unexpected error occurred. Please try again.', success: false };
   }
+}
+
+export async function logoutUser() {
+  await deleteSession();
+  redirect('/login');
 }
