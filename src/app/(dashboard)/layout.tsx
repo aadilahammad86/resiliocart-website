@@ -1,15 +1,22 @@
 import { Sidebar } from '@/components/ui/Sidebar';
+import { verifySession } from '@/lib/session';
+import { redirect } from 'next/navigation';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const session = await verifySession();
+
+  // Defensive server-side guard (middleware already handles this, but belt-and-suspenders)
+  if (!session) {
+    redirect('/login');
+  }
+
+  // Extract the role from the cryptographically verified JWT payload
+  const userRole = (session.role as string)?.toUpperCase() === 'SUPERADMIN' ? 'SUPERADMIN' : 'USER';
+
   return (
     <div className="flex min-h-screen bg-background text-foreground">
-      {/* 
-        Mocking Super Admin role specifically to fulfill the design reference requirement.
-        Change this role prop to "user" to test the restricted view. 
-      */}
-      <Sidebar role="superadmin" />
-
-      <main className="flex-1 overflow-x-hidden overflow-y-auto">{children}</main>
+      <Sidebar role={userRole} />
+      <main className="flex-1 overflow-x-hidden overflow-y-auto pt-14 md:pt-0">{children}</main>
     </div>
   );
 }

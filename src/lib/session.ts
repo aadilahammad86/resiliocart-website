@@ -1,25 +1,9 @@
 import 'server-only';
-import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
+import { type JWTPayload } from 'jose';
 import { cookies } from 'next/headers';
+import { encrypt, decrypt } from '@/lib/jwt';
 
-// In production, this must be securely generated and set in the environment variables
-const secretKey = process.env.SESSION_SECRET || 'development-fallback-secret-resiliocart';
-const key = new TextEncoder().encode(secretKey);
-
-export async function encrypt(payload: JWTPayload) {
-  return await new SignJWT(payload).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().sign(key);
-}
-
-export async function decrypt(input: string): Promise<JWTPayload | null> {
-  try {
-    const { payload } = await jwtVerify(input, key, {
-      algorithms: ['HS256'],
-    });
-    return payload;
-  } catch {
-    return null;
-  }
-}
+export { decrypt };
 
 export async function createSession(userId: string, username: string, role: string) {
   // 10-year persistent cookies (effectively never expires for active returning users on the same device)
