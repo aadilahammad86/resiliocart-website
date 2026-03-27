@@ -5,7 +5,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { GlassInput } from '@/components/ui/GlassInput';
 import { GlassButton } from '@/components/ui/GlassButton';
 import Link from 'next/link';
-import { signupUser } from '@/actions/auth';
+import { signupUser, type AuthState } from '@/actions/auth';
 import { useFormState, useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 
@@ -18,7 +18,7 @@ function SubmitButton() {
   );
 }
 
-const initialState = { error: '', success: false, message: '' };
+const initialState: AuthState = { success: false };
 
 export default function Signup() {
   const [state, formAction] = useFormState(signupUser, initialState);
@@ -26,7 +26,6 @@ export default function Signup() {
 
   React.useEffect(() => {
     if (state?.success) {
-      // Redirect to login after a brief delay so they see the bright green success message
       const timer = setTimeout(() => {
         router.push('/login');
       }, 2000);
@@ -41,7 +40,6 @@ export default function Signup() {
         <p className="text-sm text-foreground/70">Join us to manage your products seamlessly.</p>
       </div>
 
-      {/* Replaced static mocked form with fully interactive Next.js native Action Form! */}
       <form action={formAction} className="space-y-4">
         {state?.error && (
           <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg backdrop-blur-sm shadow-sm transition-all duration-300">
