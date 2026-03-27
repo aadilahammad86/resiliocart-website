@@ -1,9 +1,38 @@
+'use client';
+
+import * as React from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlassInput } from '@/components/ui/GlassInput';
 import { GlassButton } from '@/components/ui/GlassButton';
 import Link from 'next/link';
+import { loginUser } from '@/actions/auth';
+import { useFormState, useFormStatus } from 'react-dom';
+import { useRouter } from 'next/navigation';
 
-export default function LoginMockup() {
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <GlassButton variant="primary" className="w-full mt-2" type="submit" disabled={pending}>
+      {pending ? 'Signing In...' : 'Sign In'}
+    </GlassButton>
+  );
+}
+
+const initialState = { error: '', success: false, message: '' };
+
+export default function Login() {
+  const [state, formAction] = useFormState(loginUser, initialState);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (state?.success) {
+      const timer = setTimeout(() => {
+        router.push('/dashboard');
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [state?.success, router]);
+
   return (
     <GlassCard variant="light" className="p-8 space-y-6">
       <div className="text-center space-y-2">
@@ -11,25 +40,40 @@ export default function LoginMockup() {
         <p className="text-sm text-foreground/70">Enter your credentials to access your account.</p>
       </div>
 
-      <form className="space-y-4">
-        {/* Mock Error State Example (Hidden normally, but fulfills the mock criteria) */}
-        {/* <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg backdrop-blur-sm">
-              Invalid username or password. Please try again.
-            </div> */}
+      <form action={formAction} className="space-y-4">
+        {state?.error && (
+          <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg backdrop-blur-sm shadow-sm transition-all duration-300">
+            {state.error}
+          </div>
+        )}
+
+        {state?.success && (
+          <div className="p-3 text-sm text-green-500 bg-green-500/10 border border-green-500/20 rounded-lg backdrop-blur-sm shadow-sm transition-all duration-300">
+            {state?.message || 'Login successful! Redirecting...'}
+          </div>
+        )}
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Username</label>
-          <GlassInput type="text" placeholder="johndoe" required />
+          <label htmlFor="username" className="text-sm font-medium">
+            Username
+          </label>
+          <GlassInput id="username" type="text" name="username" placeholder="johndoe" required />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Password</label>
-          <GlassInput type="password" placeholder="••••••••" required />
+          <label htmlFor="password" className="text-sm font-medium">
+            Password
+          </label>
+          <GlassInput
+            id="password"
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            required
+          />
         </div>
 
-        <GlassButton variant="primary" className="w-full mt-2" type="button">
-          Sign In
-        </GlassButton>
+        <SubmitButton />
       </form>
 
       <div className="text-center text-sm text-foreground/70">
