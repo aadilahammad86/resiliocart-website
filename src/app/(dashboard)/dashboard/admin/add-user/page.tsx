@@ -5,6 +5,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { GlassInput } from '@/components/ui/GlassInput';
 import { GlassButton } from '@/components/ui/GlassButton';
 import { adminCreateUser } from '@/actions/admin';
+import { type AuthState } from '@/actions/auth';
 import { useFormState, useFormStatus } from 'react-dom';
 
 function SubmitButton() {
@@ -16,12 +17,11 @@ function SubmitButton() {
   );
 }
 
-const initialState = { error: '', success: false, message: '' };
+const initialState: AuthState = { success: false };
 
 export default function AddUserPage() {
   const [state, formAction] = useFormState(adminCreateUser, initialState);
 
-  // Auto-reset form inputs on success if needed, though React 19 handles dom forms automatically.
   const formRef = React.useRef<HTMLFormElement>(null);
 
   React.useEffect(() => {

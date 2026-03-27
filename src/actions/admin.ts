@@ -3,6 +3,7 @@
 import { z } from 'zod';
 import prisma from '@/lib/db';
 import bcrypt from 'bcryptjs';
+import { type AuthState } from '@/actions/auth';
 import { verifySession } from '@/lib/session';
 
 const adminCreateUserSchema = z.object({
@@ -10,12 +11,15 @@ const adminCreateUserSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   username: z.string().min(3, 'Username must be at least 3 characters'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  role: z.enum(['USER', 'SUPERADMIN'], {
-    errorMap: () => ({ message: 'A valid role must be selected.' }),
+  role: z.string().refine((val) => val === 'USER' || val === 'SUPERADMIN', {
+    message: 'A valid role must be selected.',
   }),
 });
 
-export async function adminCreateUser(prevState: unknown, formData: FormData) {
+export async function adminCreateUser(
+  prevState: AuthState | null,
+  formData: FormData
+): Promise<AuthState> {
   try {
     // 1. Strict Server-Side Role Gate
     const session = await verifySession();

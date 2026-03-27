@@ -5,6 +5,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { GlassInput } from '@/components/ui/GlassInput';
 import { GlassButton } from '@/components/ui/GlassButton';
 import { updateAccountDetails } from '@/actions/user';
+import { type AuthState } from '@/actions/auth';
 import { useFormState, useFormStatus } from 'react-dom';
 
 function SubmitButton() {
@@ -21,7 +22,7 @@ function SubmitButton() {
   );
 }
 
-const initialState = { error: '', success: false, message: '' };
+const initialState: AuthState = { success: false };
 
 export function AccountDetailsForm({
   user,

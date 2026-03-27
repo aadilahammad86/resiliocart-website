@@ -13,8 +13,8 @@ const signupSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
-type AuthState = {
-  error: string;
+export type AuthState = {
+  error?: string;
   success: boolean;
   message?: string;
 };
@@ -71,7 +71,10 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
-export async function loginUser(prevState: AuthState | null, formData: FormData) {
+export async function loginUser(
+  prevState: AuthState | null,
+  formData: FormData
+): Promise<AuthState> {
   try {
     const data = Object.fromEntries(formData.entries());
     const parsed = loginSchema.safeParse(data);
